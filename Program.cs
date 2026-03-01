@@ -1,44 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
+namespace CatWorx.BadgeMaker;
 
-namespace CatWorx.BadgeMaker
+class Program
 {
-  class Program
-  {
+    /// <summary>
+    /// Interactively collects employee records from the console.
+    /// The loop continues until the user submits an empty first name,
+    /// and validates that the employee ID is a whole number before accepting it.
+    /// </summary>
     static List<Employee> GetEmployees()
     {
-      List<Employee> employees = new List<Employee>();
-      while (true)
-      {
-        // Move the initial prompt inside the loop, so it repeats for each employee
-        Console.WriteLine("Enter first name (leave empty to exit): ");
+        var employees = new List<Employee>();
 
-        // change input to firstName
-        string firstName = Console.ReadLine() ?? "";
-        if (firstName == "")
+        while (true)
         {
-          break;
+            Console.Write("Enter first name (leave empty to finish): ");
+            string firstName = Console.ReadLine() ?? string.Empty;
+
+            if (firstName == string.Empty)
+                break;
+
+            Console.Write("Enter last name: ");
+            string lastName = Console.ReadLine() ?? string.Empty;
+
+            int id;
+            Console.Write("Enter ID: ");
+            while (!int.TryParse(Console.ReadLine(), out id))
+                Console.Write("Invalid ID — please enter a whole number: ");
+
+            Console.Write("Enter photo URL: ");
+            string photoUrl = Console.ReadLine() ?? string.Empty;
+
+            employees.Add(new Employee(firstName, lastName, id, photoUrl));
         }
 
-        // add a Console.ReadLine() for each value
-        Console.Write("Enter last name: ");
-        string lastName = Console.ReadLine() ?? "";
-        Console.Write("Enter ID: ");
-        int id = Int32.Parse(Console.ReadLine() ?? "");
-        Console.Write("Enter Photo URL:");
-        string photoUrl = Console.ReadLine() ?? "";
-        Employee currentEmployee = new Employee(firstName, lastName, id, photoUrl);
-        employees.Add(currentEmployee);
-      }
-
-      return employees;
+        return employees;
     }
 
     static void Main(string[] args)
     {
-      List<Employee> employees = GetEmployees();
-      Util.PrintEmployees(employees);
-      Util.MakeCSV(employees);
+        List<Employee> employees = GetEmployees();
+        Util.PrintEmployees(employees);
+        Util.MakeCSV(employees);
     }
-  }
 }
