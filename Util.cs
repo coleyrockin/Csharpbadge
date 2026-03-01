@@ -1,41 +1,35 @@
-// Import correct packages
-using System;
-using System.IO;
-using System.Collections.Generic;
+namespace CatWorx.BadgeMaker;
 
-namespace CatWorx.BadgeMaker
+/// <summary>
+/// Provides utility methods for displaying and exporting employee badge data.
+/// All members are static because <see cref="Util"/> acts as a stateless service
+/// with no per-instance data.
+/// </summary>
+static class Util
 {
-  class Util
-  {
-    // Method declared as "static"
+    /// <summary>
+    /// Prints a formatted, tab-aligned table of all employees to standard output.
+    /// </summary>
     public static void PrintEmployees(List<Employee> employees)
     {
-      for (int i = 0; i < employees.Count; i++)
-      {
-        string template = "{0,-10}\t{1,-20}\t{2}";
-        Console.WriteLine(String.Format(template, employees[i].GetId(), employees[i].GetFullName(), employees[i].GetPhotoUrl()));
-      }
+        foreach (Employee e in employees)
+            Console.WriteLine($"{e.Id,-10}\t{e.GetFullName(),-20}\t{e.PhotoUrl}");
     }
+
+    /// <summary>
+    /// Writes employee data to <c>data/employees.csv</c>.
+    /// The <c>data/</c> directory is created automatically if it does not exist.
+    /// An existing file at that path is overwritten.
+    /// </summary>
     public static void MakeCSV(List<Employee> employees)
     {
-      // Check to see if folder exists
-      if (!Directory.Exists("data"))
-      {
-        // If not, create it
-        Directory.CreateDirectory("data");
-      }
-      using (StreamWriter file = new StreamWriter("data/employees.csv"))
-      {
-        // Any code that needs the StreamWriter would go in here
+        if (!Directory.Exists("data"))
+            Directory.CreateDirectory("data");
+
+        using StreamWriter file = new("data/employees.csv");
+
         file.WriteLine("ID,Name,PhotoUrl");
-        // Loop over employees
-        for (int i = 0; i < employees.Count; i++)
-        {
-          // Write each employee to the file
-          string template = "{0},{1},{2}";
-          file.WriteLine(String.Format(template, employees[i].GetId(), employees[i].GetFullName(), employees[i].GetPhotoUrl()));
-        }
-      }
+        foreach (Employee e in employees)
+            file.WriteLine($"{e.Id},{e.GetFullName()},{e.PhotoUrl}");
     }
-  }
 }
